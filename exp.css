@@ -1,0 +1,100 @@
+*{
+	margin:0px;
+	padding:0px;
+	box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+	-o-box-sizing:border-box;
+}
+body{
+	background-color:#eeeeee;
+}
+#board{/*大框*/
+	width:600px;
+	height:600px;
+	background-color:#ffffff;
+	margin:20px auto;
+	position:relative;
+}
+#imgshow{/*显示图片的框*/
+	position:absolute;
+	background-color:#aa99aa;
+	width:300px;
+	height:300px;
+	top:50%;
+	left:50%;
+	margin-left:-150px;
+	margin-top:-150px;
+	text-align:center;
+	font-size:40px;
+}
+#buttonleft{/*左边的按钮*/
+position:absolute;
+	width:100px;
+	height:50px;
+	background-color:#bbbbbb;
+	bottom:80px;
+	left:100px;
+	border-radius:15px;
+	text-align:center;
+	line-height:50px;
+	font-size:20px;
+	transition:all 0.3s linear;
+	display:none;
+}
+#buttonright{/*右边的按钮*/
+	display:none;
+	position:absolute;
+	width:100px;
+	height:50px;
+	background-color:#bbbbbb;
+	bottom:80px;
+	right:100px;
+	border-radius:15px;
+	text-align:center;
+	line-height:50px;
+	font-size:20px;
+	transition:all 0.1s linear;
+}
+#buttonleft:hover{
+	cursor:pointer;
+	background-color:#cccccc;
+	
+}
+#buttonright:hover{
+	cursor:pointer;
+	background-color:#cccccc;
+}
+#formFrame{
+	margin:30px auto;
+	width:400px;
+	height:320px;
+	background-color:rgba(233,233,0,0.8);
+	position:relative;
+}
+.pp{
+	display:block;
+	width:300px;
+	height:50px;
+	margin:20px 20px 20px 20px;
+	position:absolute;
+	float:left;
+	font-size:30px;
+}
+.submit{
+	width:100px;
+	height:40px;
+	font-size:30px;
+	align:center;
+	valign:center;
+	background-color:#bbbbbb;
+	position:absolute;
+	left:60%;
+	top:80%;
+	margin:0 auto;
+	transition:background-color 0.3s;
+}
+.submit:hover{
+	cursor:pointer;
+	background-color:#eeeeee;
+}

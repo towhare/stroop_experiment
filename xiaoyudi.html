@@ -1,0 +1,94 @@
+<html>
+<head>
+	<meta charset="utf-8">
+</head>
+<body>
+	<canvas id="canvas"></canvas>
+	<script type="text/javascript">
+	window.requestAnimFrame=(function(){
+		return window.requestAnimationFrame ||window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||function(callback){window.setTimeout(callback,1000/60);};
+	})();
+		var can = document.getElementById("canvas");
+		var cxt = can.getContext("2d");
+		var w = can.width = window.innerWidth;
+		var h = can.height = window.innerHeight;
+		//让画布的宽高跟随浏览器窗口变化变化
+		window.onresize=function(){
+			w = can.width = window.innerWidth;
+			h = can.height = window.innerHeight;
+		}
+		cxt.fillStyle="red";
+		cxt.fillRect(0,0,100,100);
+		//cxt.fill();填充
+		//cxt.rect(x,y,w,h);//矩形路径
+		//绘制圆
+			//绘制圆形路径
+			//cxt.arc(x,y,r,0,Math.PI*2,);//圆心坐标xy,半径r 从0度到360度（必须是弧度 Math.PI*角度/180） 逆时针
+		cxt.arc(250,250,50,0,Math.PI*2,false);
+		cxt.fill();
+		var x=100,y=0;
+		/*setInterval(function(){
+			y++;
+			cxt.clearRect(0,0,w,h);//清除画布内容
+			cxt.fillRect(x,y,50,50);
+		},1000/60);*/
+		function move(){
+			y++;
+			cxt.clearRect(0,0,w,h);
+			cxt.fillRect(x,y,50,50);
+			requestAnimationFrame(move);
+		}
+		move();
+		
+		//创建雨滴对象
+		function Drop(){};
+		Drop.prototype={
+			init:function(){//初始化方法（设置每个雨滴的初始属性）
+				//设置坐标
+				this.x = random(0,w);
+				this.y = 0;
+				//y方向的速度值
+				this.vy = random(4,5);
+				//雨滴下落最大高度
+				this.l = random(0.8*h,0.9*h);
+				//初始半径
+				this.r = 1;
+				this.vr = 1;//半径扩展速度
+			},
+			draw:function(){//绘制图形
+				if(this.y>this.l){
+					cxt.arc(this.x,this.y,this.r,Math.PI*2,false);
+					cxt.strokeStyle="rgb(0,255,255)";
+					cxt.stroke();
+				}else{
+				cxt.fillStyle = "rgb(0,255,255)";
+				cxt.fillRect(this.x,this,y,10,20);
+				}
+			},
+			update:function(){//更新坐标位置
+				if(this.y<this.l){
+					this.y+=this.vy;
+				}else{//雨滴下落到指定位置 开始绘制博文
+					
+				}
+			}
+		};
+		//新建一个雨滴实例化对象
+		var drop = new Drop();
+		drop.init();//初始化
+		drop.draw();
+		for(var i = 0;i<20;i++){
+			var drop = new Drop();
+			drop.init();
+			drops.push(drop);
+		}
+		for(var i=0;i<drops.length;i++){
+			drops[i]
+		}
+		//生成随机数
+		function random(min,max){
+			return Math.random()*(max-min)+min;//min-max之间的随机数
+		}
+	</script>
+</body>
+</html>

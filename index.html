@@ -1,0 +1,224 @@
+<!doctype HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<script src="jquery.js" type="text/javascript"></script>
+	<link rel="stylesheet" href="exp.css" type="text/css">
+	<script>
+	var expcode="";
+	var disabledkey=false;//用于控制按键可用性
+	var timecode="";
+	window.onkeydown = function(e){
+		var keynum, keychar;
+		if(window.event){       //应用于IE
+			keynum = e.keyCode;//获取按下的建
+		}
+		else if(e.which){       //应用于/Firefox/Opera
+			keynum = e.which;
+		}
+		keychar = String.fromCharCode(keynum);//获取按键的字符
+		if(['F', 'J','T'].indexOf(keychar) > -1&&disabledkey==true){document.getElementById("imgshow").innerHTML="按键过快";};
+		if(['F', 'J','T'].indexOf(keychar) > -1&&disabledkey==false){
+			document.getElementById("imgshow").innerHTML="";
+			switch(keychar){
+				case 'F':
+					endCount();
+					clearInterval(Counting);
+					like();
+					break;
+				case 'J':
+					endCount();
+					clearInterval(Counting);
+					dislike();
+					break;
+				case 'T'://测试按键
+					endCount();
+					break;
+			};
+		}
+	};
+		function like(){
+			changing();
+			expcode+="_1,";
+		}
+		function dislike(){
+			changing();
+			expcode+="_2,";
+		}
+		function showimg(u){//显示图片
+			$("#imgshow").css({
+			"background":u+" no-repeat",
+			});
+		}
+		//var pic1="url(checkbox.jpg)";
+		//var pic2="url(checkbox-2.jpg)";
+		var yanbi="url(img/0.jpg)"
+		var expression=new Array(//表情图片以黑色数字表示 二维数组后面的数字表示图片出现的次数
+			["url(img/1.jpg)",4,1],
+			["url(img/2.jpg)",4,2],
+			["url(img/3.jpg)",4,3],
+			["url(img/4.jpg)",4,4]
+		);
+		var pic=new Array(//靶刺激图片
+			["url(img/1_red.jpg)",4,1],
+			["url(img/2_red.jpg)",4,2],
+			["url(img/3_red.jpg)",4,3],
+			["url(img/4_red.jpg)",4,4]
+		);
+		//重新按照一定的顺序排列
+		//目的是为了不管前面还是后面的图片每张图片显示的数量都是一样的
+		var ReArray = new Array();
+		function resetArray(){
+			var pic_randomcode = "";
+			var picCount = 0;/*存储需要重排的图片数量*/
+			//获取图片数量
+			for(var i = 0;i < expression.length;i++){
+				var NumberPerPic = parseInt(expression[i][1]);
+				picCount +=NumberPerPic;
+			}
+			console.log(picCount);
+			//引用数组
+			for(var i = 0;i < picCount;i++){
+				//选取某一个url地址放入数组
+				var ary = expression;
+				console.log("循环"+i);
+				var randomnum = parseInt(Math.random()*expression.length);
+				var p1 = expression[randomnum][0];
+				var pic1Index = expression[randomnum][2];//引用图片索引
+				var expressionCount = parseInt(expression[randomnum][1]);/*获取个数*/
+				expressionCount -= 1;
+				//从数组中减掉一个
+				if(expressionCount==0){
+					expression.splice(randomnum,1);
+				}
+				//第二张图片
+				randomnum = parseInt(Math.random()*pic.length);
+				var p2 = pic[randomnum][0];
+				var pic2Index = pic[randomnum][2];
+				var randomPicCount = parseInt(pic[randomnum][1]);
+				randomPicCount -= 1;
+				if(picCount == 0 ){
+					pic.splice(randomnum,1)
+				}
+				ReArray.push([p1,p2]);
+				pic_randomcode += ""+pic1Index+"_"+pic2Index+","
+			}
+			console.log(pic_randomcode);
+			
+		}
+		//在被试操作按钮时切记要在显示图片的时候禁用掉按钮以及按键的功能。
+		//完成实验之后显示表单，在输入特定信息之后提交到新的页面
+		var Times=0;
+		function changing(){//需要修改
+			//停止计时以及将计时器中所得到的数字放入变量中
+			if(disabledkey==false){console.log("disabledKey false")};
+			if(disabledkey==true){console.log("坏蛋");return;};
+			if(expression.length==0){experimentEnding();return;};
+			disabledkey=true;
+			Times+=1;
+			console.log(Times);
+			//按钮不可用时不执行
+			//注意刺激（空白）
+			showimg(yanbi);
+			//随机显示表情中的一个图片(启动)300ms之后
+			var randomnum=Math.floor(Math.random()*expression.length);//获取一个零到数组长度的整数
+			var sfun="showimg(\""+expression[randomnum][0]+"\")";
+			var zanshi=parseInt(expression[randomnum][1]);
+			zanshi=zanshi-1;
+			expression[randomnum][1]=zanshi;
+			expcode+=expression[randomnum][2];
+			if(zanshi==0){
+				//从数组中去掉一个
+				console.log('开始删除');
+				expression.splice(randomnum,1);//删除掉已经出现了一定数量的元素保证每个元素出现的次数都是一样的
+			}
+			setTimeout(sfun,300);//展示一个随机的表情
+			//屏蔽刺激（空白
+			sfun="showimg(\""+yanbi+"\")";
+			setTimeout(sfun,500);
+			//随机显示一张中性刺激
+			randomnum=Math.floor(Math.random()*4);
+			sfun="showimg(\""+pic[randomnum]+"\")";
+			setTimeout(sfun,800);
+			setTimeout("startCount()",800);
+			//开启输入（同时开启定时器）
+			sfun="showimg(\""+yanbi+"\")";
+			setTimeout(sfun,1000);
+			//显示时间过长提醒图片
+			//时间过长退出实验
+			//如果第一个包的展示总数超过了10次则不展示
+			//第一次写的方法--被取代了。
+			/*randomnum=0.5-Math.random();
+			if(randomnum<0){
+				if(packOneShowTimes<eachindex)showPackOne();
+				else if(packTwoShowTimes<eachindex)showPackTwo();
+				else functionEnding();
+			}
+			else{
+				if(packTwoShowTimes<eachindex)showPackTwo();
+				else if(packOneShowTimes<eachindex)showPackOne();
+				else experimentEnding();
+			}
+			console.log("总次数:"+(packTwoShowTimes+packOneShowTimes));*/
+		}
+		function enablekey(){
+			disabledkey=false;
+		}
+		//实验结束的时候调用
+		function experimentEnding(){
+			clearInterval(Counting);
+			disabledkey=true;
+			alert("实验完成");
+			$("#board").hide();//隐藏实验区域
+			$("#formFrame").show();//显示表单最后提交
+			$("#expcode").attr({"value":expcode});//将获得的数据放到表单里
+			$("#timecode").attr({"value":timecode});
+		}
+		
+		//开始计时函数
+		var timmer=0;var Counting;
+		function startCount(){
+			enablekey();
+			console.log('开始计时');
+			timmer=0;
+			Counting=setInterval(counts,20);
+		}
+		function counts(){
+			timmer+=20;
+		}
+		//结束计时函数
+		function endCount(){
+			if(timmer==0)return;
+			console.log('结束计时时间为:'+timmer);
+			clearInterval(Counting);//清除计时器循环
+			timecode+=timmer+',';//将反应时间放入一个字符串中
+		}
+	//隐藏表单 在实验完成之后再显示
+		$(document).ready(function(){
+				$("#formFrame").hide();
+				resetArray();
+			}
+			
+	);
+	//window.onload=(changing());
+	</script>
+</head>
+<body><!-- 首先确定一个大框架，图片放在中间偏上的位置，按钮放在中间偏下
+	手机端出现按钮(未完成状态) 电脑端不出现-->
+	<div id="board">
+		<div id="imgshow"></div>
+		<div id="buttonleft" class="button">喜欢(f)</div>
+		<div id="buttonright" class="button">讨厌(j)</div>
+		<div id="count"></div>
+	</div>
+	<div id="formFrame">
+		<form id="form1" action="insert.asp" method="post">
+			<p class="pp" sytle="top:20%">姓名（昵称）:<input type="text" style="height:40px" name="name"></p>
+			<p class="pp" style="top:40%">电话:<input type="text" name="number" maxlength="11"></p>
+			<input id="expcode" value="" name="expcode" type="text" readonly hidden>
+			<input id="timecode" value="" name="timecode" type="text" readonly hidden><br>
+			<input type="submit" class="submit" value="提交"></input>
+		</form>
+	</div>
+</body>
+</html>
